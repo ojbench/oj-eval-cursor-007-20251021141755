@@ -9,6 +9,7 @@
 #define _program_h
 
 #include <string>
+#include <map>
 #include <vector>
 #include <set>
 #include <unordered_map>
@@ -140,13 +141,31 @@ public:
 
     int getNextLineNumber(int lineNumber);
 
-    //more func to add
-    //todo
+    // Execution support
+    void run(EvalState &state);
+
+    // Called by statements to control flow during run()
+    void requestJump(int lineNumber);
+    void requestStop();
+
+    int getCurrentLineNumber() const;
+
+    // Line number string preservation for LIST
+    void setLineNumberString(int lineNumber, const std::string &originalToken);
+    std::vector<std::pair<std::string, std::string>> getAllLines() const;
 
 private:
 
-    // Fill this in with whatever types and instance variables you need
-    //todo
+    // Store original source lines and parsed statements
+    std::map<int, std::string> lineNumberToSource;
+    std::map<int, Statement *> lineNumberToStatement;
+    std::map<int, std::string> lineNumberToTokenString; // preserve leading zeros
+
+    // Execution state (valid only while running)
+    int currentLineNumber = -1;
+    bool stopped = false;
+    bool jumped = false;
+    int jumpTarget = -1;
 };
 
 #endif

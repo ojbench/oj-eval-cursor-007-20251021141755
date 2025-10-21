@@ -74,6 +74,73 @@ public:
 };
 
 
+// REM <comment>
+class RemStatement : public Statement {
+public:
+    explicit RemStatement(TokenScanner &scanner);
+    void execute(EvalState &state, Program &program) override;
+};
+
+// LET <var> = <exp>
+class LetStatement : public Statement {
+public:
+    explicit LetStatement(TokenScanner &scanner);
+    ~LetStatement() override;
+    void execute(EvalState &state, Program &program) override;
+private:
+    std::string varName;
+    Expression *expr = nullptr;
+};
+
+// PRINT <exp>
+class PrintStatement : public Statement {
+public:
+    explicit PrintStatement(TokenScanner &scanner);
+    ~PrintStatement() override;
+    void execute(EvalState &state, Program &program) override;
+private:
+    Expression *expr = nullptr;
+};
+
+// INPUT <var>
+class InputStatement : public Statement {
+public:
+    explicit InputStatement(TokenScanner &scanner);
+    void execute(EvalState &state, Program &program) override;
+private:
+    std::string varName;
+};
+
+// END
+class EndStatement : public Statement {
+public:
+    explicit EndStatement(TokenScanner &scanner);
+    void execute(EvalState &state, Program &program) override;
+};
+
+// GOTO <line>
+class GotoStatement : public Statement {
+public:
+    explicit GotoStatement(TokenScanner &scanner);
+    void execute(EvalState &state, Program &program) override;
+private:
+    int target = -1;
+};
+
+// IF <exp1> <op> <exp2> THEN <line>
+class IfStatement : public Statement {
+public:
+    explicit IfStatement(TokenScanner &scanner);
+    ~IfStatement() override;
+    void execute(EvalState &state, Program &program) override;
+private:
+    Expression *lhs = nullptr;
+    Expression *rhs = nullptr;
+    std::string op;
+    int target = -1;
+};
+
+
 /*
  * The remainder of this file must consists of subclass
  * definitions for the individual statement forms.  Each of
